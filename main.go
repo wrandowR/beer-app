@@ -1,12 +1,20 @@
 package main
 
+import (
+	"ZachIgarz/test-beer/config"
+	"context"
+	"log"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
-func main(){
-
-	
-func init() {
-//
-}
+	"github.com/ansel1/merry"
+	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
+	"github.com/sirupsen/logrus"
+)
 
 func main() {
 
@@ -16,33 +24,19 @@ func main() {
 	}
 	/*
 
-	appController := controller.AppController{
-		Organization:    controller.OrgController,
-		UserPermissions: controller.UserPermController,
-		User:            controller.UserController,
-		Project:         controller.ProController,
-		Did:             controller.DiController,
-		SipTrunk:        controller.SipTController,
-		Email:           controller.Email,
-		Opa:             controller.OPAController,
-		BotWhatsappLine: controller.BotWhatsappLine,
-		Bot:             controller.Bot,
-		Billing:         controller.BillingCtrl,
-		Sms:             controller.SMSController,
-		Whatsapp:        controller.Whatsapp,
-		Dashboard:       controller.Dashboard,
-	}
+		appController := controller.AppController{
+			Organization:    controller.OrgController,
+
+		}
 	*/
 
 	e := echo.New()
-	
 
 	e.HTTPErrorHandler = clog.ErrHandler(logrus.StandardLogger())
 	e.Pre(middleware.RemoveTrailingSlash())
 	e.Use(middleware.Recover())
-	e.Use(middleware.RequestID())	
+	e.Use(middleware.RequestID())
 	e.Use(middleware.CORS())
-	
 
 	e.GET("/healthz", healthHandler)
 
@@ -53,7 +47,6 @@ func main() {
 			logrus.WithError(err).Error("shutting down server")
 		}
 	}()
-	
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)

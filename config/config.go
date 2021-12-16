@@ -18,8 +18,6 @@ var c config
 const (
 	//IMGPrefix is the imagen prefix
 	IMGPrefix string = "IMG"
-	//OtpEmailTemplate is the otp email template
-	OtpEmailTemplate string = "email_otp.html"
 )
 
 //ReadConfig read config

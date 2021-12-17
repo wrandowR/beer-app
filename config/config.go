@@ -19,6 +19,7 @@ type config struct {
 		Password string `env:"DATABASE_PASSWORD"`
 		DbName   string `env:"DATABASE_DB_NAME"`
 	}
+	Migrate bool `env:"MIGRATE,default=false"`
 }
 
 var c config

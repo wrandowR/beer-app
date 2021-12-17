@@ -54,7 +54,8 @@ func TestGetBeerList(t *testing.T) {
 	beers, err := BeerInteractor.BeerList()
 	assert.NoError(t, err)
 
-	assert.Equal(t, 2, len(beers))
+	//3 beers add in migratrion
+	assert.Equal(t, 5, len(beers))
 }
 
 func TestSuccessfullyCreateBeers(t *testing.T) {

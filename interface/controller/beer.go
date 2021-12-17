@@ -85,5 +85,5 @@ func (b *beersController) BeerBoxPrice(c Context) error {
 		return merry.Wrap(err)
 	}
 
-	return c.JSON(http.StatusCreated, price)
+	return c.JSON(http.StatusOK, price)
 }

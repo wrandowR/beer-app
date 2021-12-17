@@ -49,17 +49,17 @@ type BeerInteractorInterface interface {
 	BeerBoxPrice(beerID string, request *BoxPriceRequest) (price float32, err error)
 }
 
-type beer struct {
+type Beer struct {
 	BeerRespository repository.BeerRepository
 	CurrencyLayer   contract.CurrencyLayer
 }
 
-var BeerInteractor BeerInteractorInterface = &beer{
+var BeerInteractor BeerInteractorInterface = &Beer{
 	BeerRespository: interfaceRepository.BeerRepository,
 	CurrencyLayer:   service.CurrencyLayerService,
 }
 
-func (b *beer) CreateBeer(request *BeerRequest) (*model.Beer, error) {
+func (b *Beer) CreateBeer(request *BeerRequest) (*model.Beer, error) {
 
 	if err := request.Validate(); err != nil {
 		merry.Wrap(err).WithHTTPCode(http.StatusBadRequest)
@@ -82,7 +82,7 @@ func (b *beer) CreateBeer(request *BeerRequest) (*model.Beer, error) {
 	return createdBeer, nil
 }
 
-func (b *beer) BeerList() ([]*model.Beer, error) {
+func (b *Beer) BeerList() ([]*model.Beer, error) {
 	beers, err := b.BeerRespository.Beers()
 	if err != nil {
 		return nil, merry.Wrap(err)
@@ -91,7 +91,7 @@ func (b *beer) BeerList() ([]*model.Beer, error) {
 	return beers, nil
 }
 
-func (b *beer) BeerByID(ID string) (*model.Beer, error) {
+func (b *Beer) BeerByID(ID string) (*model.Beer, error) {
 	beer, err := b.BeerRespository.Beer(ID)
 	if err != nil {
 		return nil, merry.Wrap(err)
@@ -101,7 +101,7 @@ func (b *beer) BeerByID(ID string) (*model.Beer, error) {
 }
 
 //valor de una caja especifica
-func (b *beer) BeerBoxPrice(beerID string, request *BoxPriceRequest) (price float32, err error) {
+func (b *Beer) BeerBoxPrice(beerID string, request *BoxPriceRequest) (price float32, err error) {
 
 	if err := request.ValidateBoxPrice(); err != nil {
 		merry.Wrap(err).WithHTTPCode(http.StatusBadRequest)

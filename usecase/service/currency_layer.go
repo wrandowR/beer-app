@@ -26,7 +26,6 @@ func NewCurrencyLayer() {
 func (c *CurrencyLayer) Convert(fromCurrency string, toCurrency string) (float32, error) {
 	url := config.CurrencyLayerURL() + "live?access_key=" + config.CurrencyLayerAPIKEY() + "&currencies=USD,AUD,CAD,PLN,MXN&format=1"
 
-	fmt.Println(url)
 	response, err := c.Client.R().Get(url)
 	if err != nil {
 		return 0, merry.Wrap(err)

@@ -11,6 +11,7 @@ type BeersControllerInterface interface {
 	Beers(c Context) error
 	Beer(c Context) error
 	CreateBeer(c Context) error
+	BeerBoxPrice(c Context) error
 }
 
 type beersController struct {
@@ -66,8 +67,6 @@ func (b *beersController) CreateBeer(c Context) error {
 	return c.JSON(http.StatusCreated, beerList)
 }
 
-/*
-
 func (b *beersController) BeerBoxPrice(c Context) error {
 
 	beerID := c.Param("beerID")
@@ -75,11 +74,16 @@ func (b *beersController) BeerBoxPrice(c Context) error {
 		return merry.New("Param {beerID} is required").WithHTTPCode(http.StatusBadRequest)
 	}
 
-	beerList, err := b
+	var boxpriceRequest interactor.BoxPriceRequest
+	err := c.Bind(&boxpriceRequest)
 	if err != nil {
 		return merry.Wrap(err)
 	}
 
-	return c.JSON(http.StatusCreated, beerList)
+	price, err := b.BeerInteractor.BeerBoxPrice(beerID, &boxpriceRequest)
+	if err != nil {
+		return merry.Wrap(err)
+	}
+
+	return c.JSON(http.StatusCreated, price)
 }
-*/

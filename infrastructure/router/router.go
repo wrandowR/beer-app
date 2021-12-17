@@ -21,10 +21,9 @@ func NewRouter(e *echo.Echo, c controller.AppController) *echo.Echo {
 		return controller.BeerController.CreateBeer(context)
 	})
 
-	/*
-		e.GET("/beets/:beerID/boxprice", func(context echo.Context) error {
-			return controller.BeerController.
-		})*/
+	e.GET("/beers/:beerID/boxprice", func(context echo.Context) error {
+		return controller.BeerController.BeerBoxPrice(context)
+	})
 
 	return e
 }

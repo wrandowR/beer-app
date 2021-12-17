@@ -1,6 +1,7 @@
 package interactor
 
 import (
+	"ZachIgarz/test-beer/domain/contract"
 	"ZachIgarz/test-beer/domain/model"
 	interfaceRepository "ZachIgarz/test-beer/interface/repository"
 	"ZachIgarz/test-beer/usecase/repository"
@@ -19,6 +20,11 @@ type BeerRequest struct {
 	Currency string `json:"currency"`
 }
 
+type BoxPriceRequest struct {
+	Quantity int    `json:"quantity"`
+	Currency string `json:"currency"`
+}
+
 func (request *BeerRequest) Validate() error {
 	return validation.ValidateStruct(request,
 		validation.Field(&request.Name, validation.Required),
@@ -29,18 +35,28 @@ func (request *BeerRequest) Validate() error {
 	)
 }
 
+func (request *BoxPriceRequest) ValidateBoxPrice() error {
+	return validation.ValidateStruct(request,
+		validation.Field(&request.Quantity, validation.Required),
+		validation.Field(&request.Currency, validation.Required),
+	)
+}
+
 type BeerInteractorInterface interface {
 	CreateBeer(request *BeerRequest) (*model.Beer, error)
 	BeerList() ([]*model.Beer, error)
 	BeerByID(ID string) (*model.Beer, error)
+	BeerBoxPrice(beerID string, request *BoxPriceRequest) (price float64, err error)
 }
 
 type beer struct {
 	BeerRespository repository.BeerRepository
+	CurrencyLayer   contract.CurrencyLayer
 }
 
 var BeerInteractor BeerInteractorInterface = &beer{
 	BeerRespository: interfaceRepository.BeerRepository,
+	//TODO: INITIALIZA CURRENCY LAYER
 }
 
 func (b *beer) CreateBeer(request *BeerRequest) (*model.Beer, error) {
@@ -82,4 +98,29 @@ func (b *beer) BeerByID(ID string) (*model.Beer, error) {
 	}
 
 	return beer, nil
+}
+
+//valor de una caja especifica
+func (b *beer) BeerBoxPrice(beerID string, request *BoxPriceRequest) (price float64, err error) {
+
+	if err := request.ValidateBoxPrice(); err != nil {
+		merry.Wrap(err).WithHTTPCode(http.StatusBadRequest)
+	}
+
+	beer, err := b.BeerRespository.Beer(beerID)
+	if err != nil {
+		return 0, merry.Wrap(err)
+	}
+	if beer == nil {
+		return 0, merry.New("not found").WithHTTPCode(http.StatusNotFound)
+	}
+
+	//continuar logica
+	_, err = b.CurrencyLayer.Conver(beer.Currency, request.Currency, "2")
+	if err != nil {
+		return 0, merry.Wrap(err)
+	}
+
+	return 0, nil
+
 }

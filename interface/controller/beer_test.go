@@ -63,8 +63,6 @@ func TestHTTPRequestCreateBeer(t *testing.T) {
 	rec := httptest.NewRecorder()
 
 	c := e.NewContext(req, rec)
-	//	c.SetParamNames("beerID")
-	//	c.SetParamValues(beerID)
 
 	BeerController = &beersController{
 		BeerInteractor: interactor.BeerInteractor,
@@ -80,6 +78,44 @@ func TestHTTPRequestCreateBeer(t *testing.T) {
 		Brewery:  "polars",
 		Country:  "Colombia",
 		Price:    2,
+		Currency: "USD",
+	}
+
+	var response model.Beer
+	err = json.Unmarshal(rec.Body.Bytes(), &response)
+	assert.NoError(t, err)
+
+	assert.Equal(t, expectedResponse, response)
+}
+
+func TestHTTPRequestGetBeerByID(t *testing.T) {
+	testutil.ConfigDbTest(t)
+
+	e := echo.New()
+	req := httptest.NewRequest(http.MethodPost, "/beers/:beerID", nil)
+
+	rec := httptest.NewRecorder()
+
+	beerID := "5f21ed03-513a-4731-9323-59d46c1d739b"
+
+	c := e.NewContext(req, rec)
+	c.SetParamNames("beerID")
+	c.SetParamValues(beerID)
+
+	BeerController = &beersController{
+		BeerInteractor: interactor.BeerInteractor,
+	}
+
+	err := BeerController.Beer(c)
+	assert.NoError(t, err)
+	assert.Equal(t, http.StatusOK, rec.Code)
+
+	expectedResponse := model.Beer{
+		ID:       "5f21ed03-513a-4731-9323-59d46c1d739b",
+		Name:     "Vusenwaiser",
+		Brewery:  "GermanyCO",
+		Country:  "Germany",
+		Price:    3.2,
 		Currency: "USD",
 	}
 

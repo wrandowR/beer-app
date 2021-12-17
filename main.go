@@ -6,6 +6,7 @@ import (
 	"ZachIgarz/test-beer/infrastructure/router"
 	"ZachIgarz/test-beer/interface/controller"
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -26,12 +27,22 @@ func main() {
 		log.Fatal(err)
 	}
 
+	err = datastore.NewDBConn()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if config.EnableMigrations() {
+		datastore.DoMigration()
+	}
+
 	appController := controller.AppController{
 		Beers: controller.BeerController,
 	}
 
 	e := echo.New()
 
+	e.HTTPErrorHandler = customHTTPErrorHandler
 	e.Pre(middleware.RemoveTrailingSlash())
 	e.Use(middleware.Recover())
 	e.Use(middleware.RequestID())
@@ -67,4 +78,16 @@ func healthHandler(c echo.Context) error {
 		return merry.New("error query pg")
 	}
 	return c.NoContent(http.StatusOK)
+}
+
+func customHTTPErrorHandler(err error, c echo.Context) {
+	code := http.StatusInternalServerError
+	if he, ok := err.(*echo.HTTPError); ok {
+		code = he.Code
+	}
+	c.Logger().Error(err)
+	errorPage := fmt.Sprintf("%d.html", code)
+	if err := c.File(errorPage); err != nil {
+		c.Logger().Error(err)
+	}
 }

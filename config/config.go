@@ -13,11 +13,11 @@ type config struct {
 	}
 
 	Database struct {
-		Host     string `env:"DATABASE_HOST"`
+		Host     string `env:"DATABASE_HOST,required"`
 		Port     int    `env:"DATABASE_PORT,default=5432"`
-		User     string `env:"DATABASE_USER"`
-		Password string `env:"DATABASE_PASSWORD"`
-		DbName   string `env:"DATABASE_DB_NAME"`
+		User     string `env:"DATABASE_USER,required"`
+		Password string `env:"DATABASE_PASSWORD,required"`
+		DbName   string `env:"DATABASE_DB_NAME,required"`
 	}
 	Migrate bool `env:"MIGRATE,default=false"`
 }
@@ -61,4 +61,9 @@ func PgConnMigration() *string {
 	}
 
 	return nil
+}
+
+// EnableMigrations get enable migrations
+func EnableMigrations() bool {
+	return c.Migrate
 }

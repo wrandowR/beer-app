@@ -13,7 +13,7 @@ import (
 type BeerRequest struct {
 	ID       string `json:"id"`
 	Name     string `json:"name"`
-	Brewery  string `json:"brewety"`
+	Brewery  string `json:"brewery"`
 	Country  string `json:"country"`
 	Price    int64  `json:"Price"`
 	Currency string `json:"currency"`

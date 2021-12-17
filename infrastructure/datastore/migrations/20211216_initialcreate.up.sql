@@ -6,6 +6,7 @@ CREATE TABLE beer (
     brewery varchar(100) NOT NULL,
     country varchar(100) NOT NULL,
     price  bigint,
-    currency varchar(100) NOT NULL,    
+    currency varchar(100) NOT NULL 
 );
+
 COMMIT;

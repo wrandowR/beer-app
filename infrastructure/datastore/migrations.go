@@ -72,5 +72,5 @@ func undoMigration() {
 //place the directory in the webui/backend folder regardless of what context the program was run from
 func formatDir(dir string) string {
 	basedir := strings.Split(dir, "webui")[0]
-	return basedir + "/test-beer"
+	return basedir
 }

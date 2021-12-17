@@ -48,12 +48,6 @@ func (b *beersController) Beer(c Context) error {
 
 //Beer get a specific beer by id
 func (b *beersController) CreateBeer(c Context) error {
-
-	beerID := c.Param("beerID")
-	if beerID == "" {
-		return merry.New("Param {beerID} is required").WithHTTPCode(http.StatusBadRequest)
-	}
-
 	var request interactor.BeerRequest
 	err := c.Bind(&request)
 	if err != nil {

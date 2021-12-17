@@ -7,7 +7,6 @@ import (
 	"ZachIgarz/test-beer/interface/controller"
 	"ZachIgarz/test-beer/usecase/service"
 	"context"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -46,9 +45,10 @@ func main() {
 
 	e := echo.New()
 
-	e.HTTPErrorHandler = customHTTPErrorHandler
 	e.Pre(middleware.RemoveTrailingSlash())
 	e.Use(middleware.Recover())
+	e.Use(middleware.Logger())
+
 	e.Use(middleware.RequestID())
 	e.Use(middleware.CORS())
 
@@ -82,16 +82,4 @@ func healthHandler(c echo.Context) error {
 		return merry.New("error query pg")
 	}
 	return c.NoContent(http.StatusOK)
-}
-
-func customHTTPErrorHandler(err error, c echo.Context) {
-	code := http.StatusInternalServerError
-	if he, ok := err.(*echo.HTTPError); ok {
-		code = he.Code
-	}
-	c.Logger().Error(err)
-	errorPage := fmt.Sprintf("%d.html", code)
-	if err := c.File(errorPage); err != nil {
-		c.Logger().Error(err)
-	}
 }

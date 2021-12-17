@@ -1,0 +1,30 @@
+version: "3"
+services:
+  db:
+    image: postgres:latest
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_HOST=localhost
+      - POSTGRES_DB=testingdb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=secure_pass_here
+    volumes:
+      - ~/volumes/postgres/testing:/var/lib/postgresql/data
+  app:
+    build:     
+      context: ./
+    environment:
+      CURRENCY_LAYER_API_KEY: "a920b0b2f06f9ee4ae98e174436caf6e"
+      DATABASE_HOST: db
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD: "secure_pass_here"
+      DATABASE_DB_NAME: testingdb
+      MIGRATE: "true"
+    ports:
+    - "3000:3000"
+    depends_on:
+      - db
+    links:
+      - db

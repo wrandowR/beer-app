@@ -1,6 +1,7 @@
 package datastore
 
 import (
+	"ZachIgarz/test-beer/config"
 	"database/sql"
 
 	"github.com/ansel1/merry"

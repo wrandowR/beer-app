@@ -41,6 +41,13 @@ func HTTPListener() string {
 	return fmt.Sprintf(":%d", c.Server.HTTPPort)
 }
 
+// PgConn the connection string to the pg database
+func PgConn() string {
+	return fmt.Sprintf("host=%s port=%d user=%s "+
+		"password=%s dbname=%s sslmode=disable",
+		c.Database.Host, c.Database.Port, c.Database.User, c.Database.Password, c.Database.DbName)
+}
+
 // PgConnMigration returns the config string for migration
 func PgConnMigration() *string {
 	if c.Migrate {

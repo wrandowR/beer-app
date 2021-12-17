@@ -19,7 +19,7 @@ type beerRepository struct {
 	beerTable exp.IdentifierExpression
 }
 
-var BotDBRepository repository.BeerRepository = &beerRepository{
+var BeerRepository repository.BeerRepository = &beerRepository{
 	db:        &datastore.SQLDBGoqu,
 	beerTable: beerTable,
 }
@@ -69,4 +69,27 @@ func (b *beerRepository) Beer(ID string) (*model.Beer, error) {
 	}
 
 	return &beer, nil
+}
+
+func (b *beerRepository) CreateBeer(beerRequest *model.Beer) (*model.Beer, error) {
+	_, err := b.db.Insert(b.beerTable).Cols(
+		"id",
+		"name",
+		"brewery",
+		"country",
+		"price",
+		"currency").Vals(goqu.Vals{
+		beerRequest.ID,
+		beerRequest.Name,
+		beerRequest.Brewery,
+		beerRequest.Country,
+		beerRequest.Price,
+		beerRequest.Currency,
+	}).Executor().Exec()
+
+	if err != nil {
+		return nil, merry.Wrap(err)
+	}
+
+	return beerRequest, nil
 }

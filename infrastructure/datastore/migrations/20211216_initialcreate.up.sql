@@ -1,6 +1,6 @@
 BEGIN;
 
-CREATE TABLE organization (
+CREATE TABLE beer (
     id uuid PRIMARY KEY NOT NULL,
     name varchar(100) NOT NULL,
     brewery varchar(100) NOT NULL,

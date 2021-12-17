@@ -2,6 +2,9 @@ package main
 
 import (
 	"ZachIgarz/test-beer/config"
+	"ZachIgarz/test-beer/infrastructure/datastore"
+	"ZachIgarz/test-beer/infrastructure/router"
+	"ZachIgarz/test-beer/interface/controller"
 	"context"
 	"log"
 	"net/http"
@@ -22,17 +25,13 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	/*
 
-		appController := controller.AppController{
-			Organization:    controller.OrgController,
-
-		}
-	*/
+	appController := controller.AppController{
+		Beers: controller.BeerController,
+	}
 
 	e := echo.New()
 
-	e.HTTPErrorHandler = clog.ErrHandler(logrus.StandardLogger())
 	e.Pre(middleware.RemoveTrailingSlash())
 	e.Use(middleware.Recover())
 	e.Use(middleware.RequestID())
@@ -54,7 +53,7 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	if err := e.Shutdown(ctx); err != nil {
-		clog.Panic(log, merry.Wrap(err))
+		log.Panic(merry.Wrap(err))
 	}
 }
 

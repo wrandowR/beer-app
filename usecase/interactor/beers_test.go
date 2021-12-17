@@ -8,7 +8,18 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
+
+type CurrencyLayerMock struct {
+	mock.Mock
+}
+
+func (c *CurrencyLayerMock) Convert(fromCurrency string, toCurrency string) (float32, error) {
+	args := c.Called(fromCurrency, toCurrency)
+
+	return args.Get(0).(float32), args.Error(1)
+}
 
 func TestGetBeerList(t *testing.T) {
 	testutil.ConfigDbTest(t)
@@ -19,7 +30,6 @@ func TestGetBeerList(t *testing.T) {
 
 func TestSuccessfullyCreateBeers(t *testing.T) {
 	testutil.ConfigDbTest(t)
-
 	BeerInteractor = &beer{
 		BeerRespository: interfaceRepository.BeerRepository,
 	}
@@ -75,4 +85,46 @@ func TestSuccessfullyCreateBeers(t *testing.T) {
 	}
 
 	assert.Equal(t, expecteSecondBeerResult, *resultSecondBeer)
+}
+
+func TestGetBeerBoxPrice(t *testing.T) {
+	testutil.ConfigDbTest(t)
+
+	currencyLayerMock := new(CurrencyLayerMock)
+
+	BeerInteractor = &beer{
+		BeerRespository: interfaceRepository.BeerRepository,
+		CurrencyLayer:   currencyLayerMock,
+	}
+
+	requestCreateBeer := BeerRequest{
+		ID:       uuid.New().String(),
+		Name:     "Cool Beer",
+		Brewery:  "Cool Beer House",
+		Country:  "Colombia",
+		Price:    3.2,
+		Currency: "USD",
+	}
+
+	_, err := BeerInteractor.CreateBeer(&requestCreateBeer)
+	assert.NoError(t, err)
+
+	var plnValue float32 = 4.09445
+
+	request := BoxPriceRequest{
+		Quantity: 12,
+		Currency: "PLN",
+	}
+
+	expectedPrice := requestCreateBeer.Price * plnValue
+	expectedTotalPriceResult := expectedPrice * float32(request.Quantity)
+
+	currencyLayerMock.On("Convert", requestCreateBeer.Currency, request.Currency).Return(plnValue, nil)
+
+	totalPrice, err := BeerInteractor.BeerBoxPrice(requestCreateBeer.ID, &request)
+	assert.NoError(t, err)
+
+	currencyLayerMock.AssertExpectations(t)
+
+	assert.Equal(t, expectedTotalPriceResult, totalPrice)
 }

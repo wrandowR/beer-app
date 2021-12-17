@@ -51,7 +51,7 @@ func (b *beersController) Beer(c Context) error {
 	return c.JSON(http.StatusOK, beer)
 }
 
-//Beer get a specific beer by id
+//CreateBeer create a new beer
 func (b *beersController) CreateBeer(c Context) error {
 	var request interactor.BeerRequest
 	err := c.Bind(&request)
@@ -67,6 +67,7 @@ func (b *beersController) CreateBeer(c Context) error {
 	return c.JSON(http.StatusCreated, beerList)
 }
 
+//BeerBoxPrice return beer box price
 func (b *beersController) BeerBoxPrice(c Context) error {
 
 	beerID := c.Param("beerID")

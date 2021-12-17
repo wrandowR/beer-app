@@ -5,6 +5,7 @@ import (
 	"ZachIgarz/test-beer/domain/model"
 	interfaceRepository "ZachIgarz/test-beer/interface/repository"
 	"ZachIgarz/test-beer/usecase/repository"
+	"ZachIgarz/test-beer/usecase/service"
 	"net/http"
 
 	"github.com/ansel1/merry"
@@ -56,7 +57,7 @@ type beer struct {
 
 var BeerInteractor BeerInteractorInterface = &beer{
 	BeerRespository: interfaceRepository.BeerRepository,
-	//TODO: INITIALIZA CURRENCY LAYER
+	CurrencyLayer:   service.CurrencyLayerService,
 }
 
 func (b *beer) CreateBeer(request *BeerRequest) (*model.Beer, error) {
@@ -116,7 +117,7 @@ func (b *beer) BeerBoxPrice(beerID string, request *BoxPriceRequest) (price floa
 	}
 
 	//continuar logica
-	_, err = b.CurrencyLayer.Conver(beer.Currency, request.Currency, "2")
+	_, err = b.CurrencyLayer.Convert(beer.Currency, request.Currency, "2")
 	if err != nil {
 		return 0, merry.Wrap(err)
 	}

@@ -15,7 +15,8 @@
                 "DATABASE_USER": "postgres",
                 "DATABASE_PASSWORD": "secure_pass_here",
                 "DATABASE_DB_NAME": "testingdb",
-                "MIGRATE": "true"
+                "MIGRATE": "true",
+                "CURRENCY_LAYER_API_KEY": "a920b0b2f06f9ee4ae98e174436caf6e"
             }
         }
     ]

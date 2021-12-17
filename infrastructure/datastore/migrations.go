@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"path"
-	"strings"
 
 	"github.com/golang-migrate/migrate/v4"
 
@@ -22,7 +21,7 @@ func DoMigration() {
 	if err != nil {
 		panic(err)
 	}
-	dir = formatDir(dir)
+	//	dir = formatDir(dir)
 	sourcedir := "file://" + path.Join(dir, "/infrastructure/datastore/migrations")
 
 	migration, err := migrate.New(sourcedir, *pgconn)
@@ -52,7 +51,7 @@ func undoMigration() {
 	if err != nil {
 		panic(err)
 	}
-	dir = formatDir(dir)
+	//dir = formatDir(dir)
 	sourcedir := "file://" + path.Join(dir, "/infrastructure/datastore/migrations")
 
 	migration, err := migrate.New(sourcedir, *pgconn)
@@ -66,11 +65,4 @@ func undoMigration() {
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error en migracion. %s. data %v\n", err.Error(), err)
 	}
-}
-
-//TODO: VALIDART
-//place the directory in the webui/backend folder regardless of what context the program was run from
-func formatDir(dir string) string {
-	basedir := strings.Split(dir, "webui")[0]
-	return basedir
 }

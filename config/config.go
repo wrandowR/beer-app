@@ -20,7 +20,7 @@ type config struct {
 		DbName   string `env:"DATABASE_DB_NAME,required"`
 	}
 	Migrate             bool   `env:"MIGRATE,default=false"`
-	CurrencyLayerURL    string `env:"CURRENCY_LAYER_URL,default,=https://api.currencylayer.com/"`
+	CurrencyLayerURL    string `env:"CURRENCY_LAYER_URL,default=http://api.currencylayer.com/"`
 	CurrencyLayerAPIKEY string `env:"CURRENCY_LAYER_API_KEY,required"`
 }
 
@@ -72,5 +72,5 @@ func CurrencyLayerURL() string {
 
 //CurrencyLayerAPIKEY return the CurrencyLayerAPIKEY
 func CurrencyLayerAPIKEY() string {
-	return c.CurrencyLayerURL
+	return c.CurrencyLayerAPIKEY
 }

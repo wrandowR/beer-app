@@ -5,6 +5,7 @@ import (
 	"ZachIgarz/test-beer/infrastructure/datastore"
 	"ZachIgarz/test-beer/infrastructure/router"
 	"ZachIgarz/test-beer/interface/controller"
+	"ZachIgarz/test-beer/usecase/service"
 	"context"
 	"fmt"
 	"log"
@@ -35,6 +36,9 @@ func main() {
 	if config.EnableMigrations() {
 		datastore.DoMigration()
 	}
+
+	//initialize currency layer service
+	service.NewCurrencyLayer()
 
 	appController := controller.AppController{
 		Beers: controller.BeerController,

@@ -9,4 +9,11 @@ CREATE TABLE beer (
     currency varchar(100) NOT NULL 
 );
 
+
+
+/*TODO: ADD A COUPLE OF BEERS c: */
+/*INSERT INTO public.beer(
+	id, name, brewery, country, price, currency)
+	VALUES (?, ?, ?, ?, ?, ?);/
+*/
 COMMIT;

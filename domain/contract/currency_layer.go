@@ -1,7 +1,7 @@
 package contract
 
 type CurrencyLayer interface {
-	Conver(fromCurrency string, toCurrency string, amount string) (float64, error)
+	Convert(fromCurrency string, toCurrency string, amount string) (float64, error)
 }
 
 type CurrencyLayerResponse struct {

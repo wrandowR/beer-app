@@ -23,9 +23,38 @@ func (c *CurrencyLayerMock) Convert(fromCurrency string, toCurrency string) (flo
 
 func TestGetBeerList(t *testing.T) {
 	testutil.ConfigDbTest(t)
+	BeerInteractor = &beer{
+		BeerRespository: interfaceRepository.BeerRepository,
+	}
 
-	//create 3 bearts  a get that bears
+	requestCreateBeer := BeerRequest{
+		ID:       uuid.New().String(),
+		Name:     "Cool Beer",
+		Brewery:  "Cool Beer House",
+		Country:  "Colombia",
+		Price:    3.2,
+		Currency: "USD",
+	}
 
+	_, err := BeerInteractor.CreateBeer(&requestCreateBeer)
+	assert.NoError(t, err)
+
+	requestCreateBeer2 := BeerRequest{
+		ID:       uuid.New().String(),
+		Name:     "Cool Beer",
+		Brewery:  "Cool Beer House",
+		Country:  "Colombia",
+		Price:    3.2,
+		Currency: "USD",
+	}
+
+	_, err = BeerInteractor.CreateBeer(&requestCreateBeer2)
+	assert.NoError(t, err)
+
+	beers, err := BeerInteractor.BeerList()
+	assert.NoError(t, err)
+
+	assert.Equal(t, 2, len(beers))
 }
 
 func TestSuccessfullyCreateBeers(t *testing.T) {

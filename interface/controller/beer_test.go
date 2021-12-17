@@ -1,7 +1,9 @@
 package controller
 
 import (
+	"ZachIgarz/test-beer/domain/contract"
 	"ZachIgarz/test-beer/domain/model"
+	interfaceRepository "ZachIgarz/test-beer/interface/repository"
 	"ZachIgarz/test-beer/testutil"
 	"ZachIgarz/test-beer/usecase/interactor"
 	"bytes"
@@ -106,10 +108,6 @@ func TestHTTPRequestGetBeerByID(t *testing.T) {
 		BeerInteractor: interactor.BeerInteractor,
 	}
 
-	err := BeerController.Beer(c)
-	assert.NoError(t, err)
-	assert.Equal(t, http.StatusOK, rec.Code)
-
 	expectedResponse := model.Beer{
 		ID:       "5f21ed03-513a-4731-9323-59d46c1d739b",
 		Name:     "Vusenwaiser",
@@ -119,9 +117,58 @@ func TestHTTPRequestGetBeerByID(t *testing.T) {
 		Currency: "USD",
 	}
 
+	err := BeerController.Beer(c)
+	assert.NoError(t, err)
+	assert.Equal(t, http.StatusOK, rec.Code)
+
 	var response model.Beer
 	err = json.Unmarshal(rec.Body.Bytes(), &response)
 	assert.NoError(t, err)
 
 	assert.Equal(t, expectedResponse, response)
+}
+
+func TestHTTPRequestGetBeerBoxPrice(t *testing.T) {
+	testutil.ConfigDbTest(t)
+
+	body := new(bytes.Buffer)
+
+	body.Write([]byte(`{
+	"quantity":4,
+    "currency":"USD"
+	}`))
+
+	e := echo.New()
+	req := httptest.NewRequest(http.MethodPost, "/beers/:beerID/boxprice", body)
+	req.Header.Set(echo.HeaderContentType, "application/json")
+	rec := httptest.NewRecorder()
+
+	beerID := "5f21ed03-513a-4731-9323-59d46c1d739b"
+
+	c := e.NewContext(req, rec)
+	c.SetParamNames("beerID")
+	c.SetParamValues(beerID)
+
+	currencyLayerMock := new(contract.CurrencyLayerMock)
+
+	interactor.BeerInteractor = &interactor.Beer{
+		BeerRespository: interfaceRepository.BeerRepository,
+		CurrencyLayer:   currencyLayerMock,
+	}
+
+	BeerController = &beersController{
+		BeerInteractor: interactor.BeerInteractor,
+	}
+
+	err := BeerController.BeerBoxPrice(c)
+	assert.NoError(t, err)
+	assert.Equal(t, http.StatusOK, rec.Code)
+
+	expectedResponse := 3.2 * 4
+
+	var response float32
+	err = json.Unmarshal(rec.Body.Bytes(), &response)
+	assert.NoError(t, err)
+
+	assert.Equal(t, float32(expectedResponse), response)
 }

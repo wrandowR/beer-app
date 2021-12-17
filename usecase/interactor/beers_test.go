@@ -1,6 +1,7 @@
 package interactor
 
 import (
+	"ZachIgarz/test-beer/domain/contract"
 	"ZachIgarz/test-beer/domain/model"
 	interfaceRepository "ZachIgarz/test-beer/interface/repository"
 	"ZachIgarz/test-beer/testutil"
@@ -8,22 +9,11 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 )
-
-type CurrencyLayerMock struct {
-	mock.Mock
-}
-
-func (c *CurrencyLayerMock) Convert(fromCurrency string, toCurrency string) (float32, error) {
-	args := c.Called(fromCurrency, toCurrency)
-
-	return args.Get(0).(float32), args.Error(1)
-}
 
 func TestGetBeerList(t *testing.T) {
 	testutil.ConfigDbTest(t)
-	BeerInteractor = &beer{
+	BeerInteractor = &Beer{
 		BeerRespository: interfaceRepository.BeerRepository,
 	}
 
@@ -60,7 +50,7 @@ func TestGetBeerList(t *testing.T) {
 
 func TestSuccessfullyCreateBeers(t *testing.T) {
 	testutil.ConfigDbTest(t)
-	BeerInteractor = &beer{
+	BeerInteractor = &Beer{
 		BeerRespository: interfaceRepository.BeerRepository,
 	}
 
@@ -120,9 +110,9 @@ func TestSuccessfullyCreateBeers(t *testing.T) {
 func TestGetBeerBoxPrice(t *testing.T) {
 	testutil.ConfigDbTest(t)
 
-	currencyLayerMock := new(CurrencyLayerMock)
+	currencyLayerMock := new(contract.CurrencyLayerMock)
 
-	BeerInteractor = &beer{
+	BeerInteractor = &Beer{
 		BeerRespository: interfaceRepository.BeerRepository,
 		CurrencyLayer:   currencyLayerMock,
 	}

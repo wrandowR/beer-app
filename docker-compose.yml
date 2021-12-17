@@ -21,6 +21,7 @@ services:
       DATABASE_USER: postgres
       DATABASE_PASSWORD: "secure_pass_here"
       DATABASE_DB_NAME: testingdb
+      MIGRATE: "true"
     ports:
     - "3000:3000"
     depends_on:

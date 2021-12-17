@@ -100,7 +100,7 @@ func (b *Beer) BeerByID(ID string) (*model.Beer, error) {
 	return beer, nil
 }
 
-//valor de una caja especifica
+//BeerBoxPrice return the beer box price
 func (b *Beer) BeerBoxPrice(beerID string, request *BoxPriceRequest) (price float32, err error) {
 
 	if err := request.ValidateBoxPrice(); err != nil {
@@ -122,8 +122,7 @@ func (b *Beer) BeerBoxPrice(beerID string, request *BoxPriceRequest) (price floa
 	if beer.Currency == request.Currency {
 		return beer.Price * float32(request.Quantity), nil
 	}
-
-	//continuar logica
+	
 	currencyValue, err := b.CurrencyLayer.Convert(beer.Currency, request.Currency)
 	if err != nil {
 		return 0, merry.Wrap(err)

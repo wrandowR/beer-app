@@ -19,15 +19,12 @@ type config struct {
 		Password string `env:"DATABASE_PASSWORD,required"`
 		DbName   string `env:"DATABASE_DB_NAME,required"`
 	}
-	Migrate bool `env:"MIGRATE,default=false"`
+	Migrate             bool   `env:"MIGRATE,default=false"`
+	CurrencyLayerURL    string `env:"CURRENCY_LAYER_URL,default,=https://api.currencylayer.com/"`
+	CurrencyLayerAPIKEY string `env:"CURRENCY_LAYER_API_KEY,required"`
 }
 
 var c config
-
-const (
-	//IMGPrefix is the imagen prefix
-	IMGPrefix string = "IMG"
-)
 
 //ReadConfig read config
 func ReadConfig() error {
@@ -66,4 +63,14 @@ func PgConnMigration() *string {
 // EnableMigrations get enable migrations
 func EnableMigrations() bool {
 	return c.Migrate
+}
+
+//CurrencyLayerURL return the CurrencyLayerURL
+func CurrencyLayerURL() string {
+	return c.CurrencyLayerURL
+}
+
+//CurrencyLayerAPIKEY return the CurrencyLayerAPIKEY
+func CurrencyLayerAPIKEY() string {
+	return c.CurrencyLayerURL
 }

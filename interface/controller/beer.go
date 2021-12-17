@@ -43,6 +43,10 @@ func (b *beersController) Beer(c Context) error {
 		return merry.Wrap(err)
 	}
 
+	if beer == nil {
+		return c.NoContent(http.StatusNotFound)
+	}
+
 	return c.JSON(http.StatusOK, beer)
 }
 

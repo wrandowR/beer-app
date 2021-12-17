@@ -46,11 +46,19 @@ func main() {
 
 	e := echo.New()
 
-	e.HTTPErrorHandler = customHTTPErrorHandler
 	e.Pre(middleware.RemoveTrailingSlash())
 	e.Use(middleware.Recover())
+	e.Use(middleware.Logger())
 	e.Use(middleware.RequestID())
 	e.Use(middleware.CORS())
+
+	e.HTTPErrorHandler = func(err error, c echo.Context) {
+		// Take required information from error and context and send it to a service like New Relic
+		fmt.Println(c.Path(), c.QueryParams(), err.Error())
+
+		// Call the default handler to return the HTTP response
+		e.DefaultHTTPErrorHandler(err, c)
+	}
 
 	e.GET("/healthz", healthHandler)
 
@@ -82,16 +90,4 @@ func healthHandler(c echo.Context) error {
 		return merry.New("error query pg")
 	}
 	return c.NoContent(http.StatusOK)
-}
-
-func customHTTPErrorHandler(err error, c echo.Context) {
-	code := http.StatusInternalServerError
-	if he, ok := err.(*echo.HTTPError); ok {
-		code = he.Code
-	}
-	c.Logger().Error(err)
-	errorPage := fmt.Sprintf("%d.html", code)
-	if err := c.File(errorPage); err != nil {
-		c.Logger().Error(err)
-	}
 }

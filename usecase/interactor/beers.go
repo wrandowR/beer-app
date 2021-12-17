@@ -13,12 +13,12 @@ import (
 )
 
 type BeerRequest struct {
-	ID       string `json:"id"`
-	Name     string `json:"name"`
-	Brewery  string `json:"brewery"`
-	Country  string `json:"country"`
-	Price    int64  `json:"Price"`
-	Currency string `json:"currency"`
+	ID       string  `json:"id"`
+	Name     string  `json:"name"`
+	Brewery  string  `json:"brewery"`
+	Country  string  `json:"country"`
+	Price    float32 `json:"Price"`
+	Currency string  `json:"currency"`
 }
 
 type BoxPriceRequest struct {
@@ -38,7 +38,6 @@ func (request *BeerRequest) Validate() error {
 
 func (request *BoxPriceRequest) ValidateBoxPrice() error {
 	return validation.ValidateStruct(request,
-		validation.Field(&request.Quantity, validation.Required),
 		validation.Field(&request.Currency, validation.Required),
 	)
 }
@@ -47,7 +46,7 @@ type BeerInteractorInterface interface {
 	CreateBeer(request *BeerRequest) (*model.Beer, error)
 	BeerList() ([]*model.Beer, error)
 	BeerByID(ID string) (*model.Beer, error)
-	BeerBoxPrice(beerID string, request *BoxPriceRequest) (price float64, err error)
+	BeerBoxPrice(beerID string, request *BoxPriceRequest) (price float32, err error)
 }
 
 type beer struct {
@@ -102,7 +101,7 @@ func (b *beer) BeerByID(ID string) (*model.Beer, error) {
 }
 
 //valor de una caja especifica
-func (b *beer) BeerBoxPrice(beerID string, request *BoxPriceRequest) (price float64, err error) {
+func (b *beer) BeerBoxPrice(beerID string, request *BoxPriceRequest) (price float32, err error) {
 
 	if err := request.ValidateBoxPrice(); err != nil {
 		merry.Wrap(err).WithHTTPCode(http.StatusBadRequest)
@@ -116,12 +115,26 @@ func (b *beer) BeerBoxPrice(beerID string, request *BoxPriceRequest) (price floa
 		return 0, merry.New("not found").WithHTTPCode(http.StatusNotFound)
 	}
 
+	if request.Quantity == 0 {
+		request.Quantity = 6
+	}
+
+	if beer.Currency == request.Currency {
+		return beer.Price * float32(request.Quantity), nil
+	}
+
 	//continuar logica
-	_, err = b.CurrencyLayer.Convert(beer.Currency, request.Currency, "2")
+	currencyValue, err := b.CurrencyLayer.Convert(beer.Currency, request.Currency)
 	if err != nil {
 		return 0, merry.Wrap(err)
 	}
 
-	return 0, nil
+	if currencyValue == 0 {
+		return 0, merry.New("currency not found").WithHTTPCode(http.StatusNotFound)
+	}
 
+	price = beer.Price * float32(currencyValue)
+	total := price * float32(request.Quantity)
+
+	return total, nil
 }

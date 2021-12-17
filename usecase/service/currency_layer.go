@@ -23,7 +23,7 @@ func NewCurrencyLayer() {
 }
 
 //Convert one currency to another
-func (c *CurrencyLayer) Convert(fromCurrency string, toCurrency string, amount string) (float64, error) {
+func (c *CurrencyLayer) Convert(fromCurrency string, toCurrency string) (float32, error) {
 	url := config.CurrencyLayerURL() + "live?access_key=" + config.CurrencyLayerAPIKEY() + "&currencies=USD,AUD,CAD,PLN,MXN&format=1"
 
 	fmt.Println(url)
@@ -44,8 +44,11 @@ func (c *CurrencyLayer) Convert(fromCurrency string, toCurrency string, amount s
 		return 0, merry.Wrap(err)
 	}
 
-	fmt.Println("response", currencyResponse)
+	for key, val := range currencyResponse.Quotes {
+		if key == fromCurrency+toCurrency {
+			return val, nil
+		}
+	}
 
 	return 0, nil
-
 }

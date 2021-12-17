@@ -5,6 +5,6 @@ type Beer struct {
 	Name     string `json:"name"`
 	Brewery  string
 	Country  string
-	Price    int64
+	Price    float32
 	Currency string
 }

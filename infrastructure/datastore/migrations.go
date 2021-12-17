@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"strings"
 
 	"github.com/golang-migrate/migrate/v4"
 
@@ -21,7 +22,7 @@ func DoMigration() {
 	if err != nil {
 		panic(err)
 	}
-	//	dir = formatDir(dir)
+	dir = formatDir(dir)
 	sourcedir := "file://" + path.Join(dir, "/infrastructure/datastore/migrations")
 
 	migration, err := migrate.New(sourcedir, *pgconn)
@@ -51,7 +52,7 @@ func undoMigration() {
 	if err != nil {
 		panic(err)
 	}
-	//dir = formatDir(dir)
+	dir = formatDir(dir)
 	sourcedir := "file://" + path.Join(dir, "/infrastructure/datastore/migrations")
 
 	migration, err := migrate.New(sourcedir, *pgconn)
@@ -65,4 +66,10 @@ func undoMigration() {
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error en migracion. %s. data %v\n", err.Error(), err)
 	}
+}
+
+func formatDir(dir string) string {
+	fmt.Println(dir)
+	basedir := strings.Split(dir, "/test-beer")[0]
+	return basedir + "/test-beer"
 }

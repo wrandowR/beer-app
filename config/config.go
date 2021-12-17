@@ -74,3 +74,22 @@ func CurrencyLayerURL() string {
 func CurrencyLayerAPIKEY() string {
 	return c.CurrencyLayerAPIKEY
 }
+
+//SetConfigs set configs
+func SetConfigs(Host string, DbName string, User string, Password string, Migrate bool) error {
+
+	c.Database.Host = Host
+	c.Database.DbName = DbName
+	c.Database.User = User
+	c.Database.Password = Password
+	c.Migrate = Migrate
+
+	c.CurrencyLayerAPIKEY = "test"
+
+	err := ReadConfig()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

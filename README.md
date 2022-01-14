@@ -10,6 +10,18 @@ and use a postgrest database
 
 Everything is uploaded automatically using docker compose
 
+
+## Endpoints 📋
+
+GET - /beers
+
+GET - /beers/:beerID
+
+POST - /beers
+
+GET - /beers/:beerID/boxprice
+
+
 ## Requirements 📋
 
 Docker , Docker-Compose 

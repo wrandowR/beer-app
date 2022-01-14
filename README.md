@@ -1,5 +1,14 @@
 # Beer Test 🚀
+This is a web api, to identify beer prices add and calculate the value of boxes of 6 beers,
 
+Has Unit Tests
+
+clean architecture
+
+and use a postgrest database
+
+
+Everything is uploaded automatically using docker compose
 
 ## Requirements 📋
 

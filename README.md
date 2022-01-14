@@ -19,7 +19,7 @@ Everything is uploaded automatically using docker compose
 
 ``` POST - /beers ```
 
-``` GET - /beers/:beerID/boxprice
+``` sh GET - /beers/:beerID/boxprice
 -currency  
 -quantity
 ```

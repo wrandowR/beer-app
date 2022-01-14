@@ -13,14 +13,16 @@ Everything is uploaded automatically using docker compose
 
 ## Endpoints 📋
 
-GET - /beers
+``` GET - /beers ```
+ 
+``` GET - /beers/:beerID ```
 
-GET - /beers/:beerID
+``` POST - /beers ```
 
-POST - /beers
-
-GET - /beers/:beerID/boxprice
-
+``` GET - /beers/:beerID/boxprice
+-currency  
+-quantity
+```
 
 ## Requirements 📋
 

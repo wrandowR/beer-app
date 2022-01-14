@@ -19,10 +19,8 @@ Everything is uploaded automatically using docker compose
 
 ``` POST - /beers ```
 
-``` sh GET - /beers/:beerID/boxprice
--currency  
--quantity
-```
+``` GET - /beers/:beerID/boxprice - currency  -quantity ```
+
 
 ## Requirements 📋
 

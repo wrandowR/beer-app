@@ -69,7 +69,6 @@ func undoMigration() {
 }
 
 func formatDir(dir string) string {
-	fmt.Println(dir)
-	basedir := strings.Split(dir, "/test-beer")[0]
-	return basedir + "/test-beer"
+	basedir := strings.Split(dir, "/beer-app")[0]
+	return basedir + "/beer-app"
 }

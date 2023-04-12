@@ -5,7 +5,7 @@ import (
 	"ZachIgarz/test-beer/domain/contract"
 
 	"encoding/json"
-	"fmt"
+
 	"net/http"
 
 	"github.com/ansel1/merry"
@@ -22,7 +22,7 @@ func NewCurrencyLayer() {
 	CurrencyLayerService.(*CurrencyLayer).Client = resty.New().SetRetryCount(5)
 }
 
-//Convert one currency to another
+// Convert one currency to another
 func (c *CurrencyLayer) Convert(fromCurrency string, toCurrency string) (float32, error) {
 	url := config.CurrencyLayerURL() + "live?access_key=" + config.CurrencyLayerAPIKEY() + "&currencies=USD,AUD,CAD,PLN,MXN&format=1"
 

@@ -35,7 +35,7 @@ Estas herramientas son necesarias para garantizar una implementación exitosa de
 
 Para iniciar el Web API, simplemente abre una terminal y navega hasta el directorio raíz del proyecto. Luego, ejecuta el siguiente comando en la terminal:
 
-``` docker-compose up ```
+``` sh docker-compose up ```
 
 Este comando se encargará de cargar y ejecutar todos los contenedores necesarios para el Web API, incluyendo la base de datos y el servidor web. Una vez que los contenedores se hayan cargado correctamente, podrás acceder al Web API a través de tu navegador o herramienta de cliente HTTP.
 
